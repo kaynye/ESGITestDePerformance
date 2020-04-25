@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Service\TemporaryFileManager;
 use App\Service\UploadedFileManager;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class UserController extends AbstractController
 {
@@ -17,10 +18,20 @@ class UserController extends AbstractController
      * @Route("/member/profile-details", name="profil_show")
      */
     public function show()
-    {
-        return $this->render('user/profile.html.twig', [
-      
-        ]);
+    { 
+         $cache = new FilesystemAdapter();
+
+        $htmlHome = $cache->getItem('stats.LoginPage');
+
+        if (!$htmlHome->isHit()) {
+            $homeValue=$this->render('user/profile.html.twig', [
+                ]);
+            $htmlHome->set($homeValue);
+        }
+        return  $htmlHome->get();
+
+
+
     }
 
     /**

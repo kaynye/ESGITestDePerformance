@@ -22,10 +22,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 /**
  * handle all requests related to trick diplay and management
  */
+
 class TrickController extends AbstractController
 {
     private $uploadedFile;
@@ -40,14 +42,19 @@ class TrickController extends AbstractController
      */
     public function index(TrickRepository $trickRepository): Response
     {
-        $tricks = $trickRepository->findAll();
+        $cache = new FilesystemAdapter();
 
+        $htmlHome = $cache->getItem('stats.HomeTricks');
 
-        return $this->render('trick/index.html.twig', [
-          'tricks' => $tricks,
-            'fixed_menu'=> 'enabled'
-
-        ]);
+        if (!$htmlHome->isHit()) {
+            $tricks = $trickRepository->findAll();
+            $homeValue=$this->render('trick/index.html.twig', [
+                'tricks' => $tricks,
+                  'fixed_menu'=> 'enabled'
+              ]);
+            $htmlHome->set($homeValue);
+        }
+        return  $htmlHome->get();
     }
 
     /**
@@ -186,11 +193,21 @@ class TrickController extends AbstractController
      */
     public function ajax(TrickRepository $trickRepository, Request $request)
     {
+        $cache = new FilesystemAdapter();
+        
+
         if (!$request->request->has('first')) {
-            return $this->render('trick/ajax.html.twig', [
-          'count' => $trickRepository->countTricks()
-        ]);
+            $htmlTrick = $cache->getItem('stats.trickHome');
+            
+            if (!$htmlTrick->isHit()) {
+                $htmlValue = $this->render('trick/ajax.html.twig', [
+                    'count' => $trickRepository->countTricks()
+                  ]);
+                  $htmlTrick->set($htmlValue);
+            }
+            return $htmlTrick->get();;
         } else {
+
             return $this->render('trick/ajax.html.twig', [
 
             'tricks' => $trickRepository->loadXtricks($request->request->get('first'), 4),
