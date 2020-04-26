@@ -8,12 +8,12 @@
 		  <!-- Font Awesome -->
 		  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
 		  <!-- Bootstrap core CSS -->
-		  <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
+		  <link href="{{preload(asset('css/bootstrap.min.css'), {nopush: true})}}" rel="stylesheet">
 		  <!-- Material Design Bootstrap -->
-		  <link href="{{asset('css/mdb.min.css')}}" rel="stylesheet">
+		  <link href="{{preload(asset('css/mdb.min.css'), {nopush: true})}}" rel="stylesheet">
 		  <!-- Your custom styles (optional) -->
-		  <link href="{{asset('css/style.min.css')}}" rel="stylesheet">
-      <link href="{{asset('css/mainstyle.css')}}" rel="stylesheet">
+		  <link href="{{preload(asset('css/style.min.css'), {nopush: true})}}" rel="stylesheet">
+      <link href="{{preload(asset('css/mainstyle.css'), {nopush: true})}}" rel="stylesheet">
 		  {% block stylesheets %}{% endblock %}
 
 		</head>
@@ -153,8 +153,8 @@
 					   {% endfor %}
  					{% endfor %}
         </script>
-        <script type="text/javascript" src="{{asset('js/mainJs.js')}}"></script>
-        <script type="text/javascript" src="{{asset('js/new_collection_widget.js')}}"></script>
+        <script type="text/javascript" src="{{preload(asset('js/mainJs.js'), {nopush: true})}}"></script>
+        <script type="text/javascript" src="{{preload(asset('js/new_collection_widget.js'), {nopush: true})}}"></script>
         {% block javascripts %}{% endblock %}
     </body>
 </html>
